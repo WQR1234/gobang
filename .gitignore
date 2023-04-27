@@ -1,0 +1,4 @@
+__pycache__/
+foobar.py
+**/__pycache__/
+.idea/
