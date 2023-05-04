@@ -35,6 +35,9 @@ class Ui_gobangMainWidget(object):
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
         self.comboBox_2 = QComboBox(self.widget)
+        self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
         self.comboBox_2.setObjectName(u"comboBox_2")
 
         self.gridLayout.addWidget(self.comboBox_2, 0, 1, 1, 1)
@@ -45,7 +48,11 @@ class Ui_gobangMainWidget(object):
         self.gridLayout.addWidget(self.textEdit, 1, 0, 1, 2)
 
         self.comboBox = QComboBox(self.widget)
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
         self.comboBox.setObjectName(u"comboBox")
+        self.comboBox.setEditable(False)
 
         self.gridLayout.addWidget(self.comboBox, 0, 0, 1, 1)
 
@@ -59,10 +66,10 @@ class Ui_gobangMainWidget(object):
 
         self.gridLayout.addWidget(self.clearBtn, 2, 1, 1, 1)
 
-        self.pushButton_4 = QPushButton(self.widget)
-        self.pushButton_4.setObjectName(u"pushButton_4")
+        self.startBtn = QPushButton(self.widget)
+        self.startBtn.setObjectName(u"startBtn")
 
-        self.gridLayout.addWidget(self.pushButton_4, 2, 0, 1, 1)
+        self.gridLayout.addWidget(self.startBtn, 2, 0, 1, 1)
 
 
         self.horizontalLayout_2.addLayout(self.gridLayout)
@@ -84,9 +91,18 @@ class Ui_gobangMainWidget(object):
 
     def retranslateUi(self, gobangMainWidget):
         gobangMainWidget.setWindowTitle(QCoreApplication.translate("gobangMainWidget", u"Form", None))
+        self.comboBox_2.setItemText(0, QCoreApplication.translate("gobangMainWidget", u"\u4eba", None))
+        self.comboBox_2.setItemText(1, QCoreApplication.translate("gobangMainWidget", u"\u03b1-\u03b2", None))
+        self.comboBox_2.setItemText(2, QCoreApplication.translate("gobangMainWidget", u"mcts", None))
+
+        self.comboBox.setItemText(0, QCoreApplication.translate("gobangMainWidget", u"\u4eba", None))
+        self.comboBox.setItemText(1, QCoreApplication.translate("gobangMainWidget", u"\u03b1-\u03b2", None))
+        self.comboBox.setItemText(2, QCoreApplication.translate("gobangMainWidget", u"mcst", None))
+
+        self.comboBox.setCurrentText(QCoreApplication.translate("gobangMainWidget", u"\u4eba", None))
         self.pushButton.setText(QCoreApplication.translate("gobangMainWidget", u"PushButton", None))
         self.clearBtn.setText(QCoreApplication.translate("gobangMainWidget", u"\u6e05\u7a7a", None))
-        self.pushButton_4.setText(QCoreApplication.translate("gobangMainWidget", u"PushButton", None))
+        self.startBtn.setText(QCoreApplication.translate("gobangMainWidget", u"\u5f00\u59cb", None))
         self.boardWidget.setText("")
     # retranslateUi
 

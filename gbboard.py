@@ -48,6 +48,12 @@ class Board:
     def get_player(self, point: Tuple):
         return Player.value2player(self._grid[point])
 
+    def __deepcopy__(self, memodict={}):
+        board_copy = Board()
+        board_copy._grid = self._grid.copy()
+        board_copy.surplus = self.surplus
+        return board_copy
+
 
 class Move:
     def __init__(self, point: Optional[Tuple] = None, is_resign: bool = False):
