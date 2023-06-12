@@ -25,7 +25,7 @@ class BoardWidget(QLabel):
         self.m_rect_vertex = QPoint(-1, -1)
         self.m_rect_size = QSize()
 
-        self.game:Optional[GameState] = None
+        self.game: Optional[GameState] = None
         self.players = {
             Player.black: Human(),
             Player.white: Human()
@@ -71,13 +71,13 @@ class BoardWidget(QLabel):
             row = np.argmin(np.abs(BoardWidget.Y_SCALE-mouse_y))
             # y = BoardWidget.Y_SCALE[index_y]
             # self.m_circle_center = QPoint(BoardWidget.X_SCALE[self.col], BoardWidget.Y_SCALE[self.row])
-            self.m_circle_radius = 16
 
             if self.game.is_valid_move(Move.play((row, col))):
+                self.m_circle_radius = 16
                 self.m_pixmap = self.grab()
                 self.row, self.col = row, col
-                self.update()
                 self.loop.quit()
+                # self.repaint()
 
     def mouseMoveEvent(self, ev: QMouseEvent) -> None:
         if self.game is not None:
@@ -90,17 +90,5 @@ class BoardWidget(QLabel):
                 self.m_rect_vertex = QPoint(x-10, y-10)
                 self.m_rect_size = QSize(20, 20)
 
-                self.update()
-
-    def start_new_game(self):
-        self.game = GameState.new_game()
-        while not self.game.is_over():
-            if isinstance(self.players[self.game.next_player], Human):
-                self.loop.exec()
-                if self.game is None:
-                    break
-                self.game = self.game.apply_move(Move.play((self.row, self.col)))
-            else:
-                pass
-
+                self.repaint()
 

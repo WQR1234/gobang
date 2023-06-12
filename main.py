@@ -1,8 +1,8 @@
 import time
 
 from agent import *
-from evaluation import evaluation_fn
-from gbboard import Board, GameState, Move
+from evaluation2 import evaluation_fn
+from gbboard2 import Board, GameState, Move
 from gbtypes import Player
 
 COL_NAMES = 'ABCDEFGHJKLMNOP'
@@ -44,7 +44,7 @@ def main():
     elif choice1 == '2':
         player1 = AlphaBetaAgent(3, evaluation_fn)
     else:
-        player1 = MCTSAgent(4000, 1.1)
+        player1 = MCTSAgent(15000, 1.3)
 
     choice2 = input("choice white:(1: human, 2:robot, 3: mcts)")
     if choice2 == '1':

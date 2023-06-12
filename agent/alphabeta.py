@@ -2,8 +2,9 @@ import random
 from typing import Callable
 
 from agent.base import Agent
-from gbboard import GameState, BOARD_SIZE, Move
+from gbboard2 import GameState, BOARD_SIZE, Move
 from gbtypes import Player
+import time
 
 MAX_SCORE = 9999
 MIN_SCORE = -9999
@@ -21,7 +22,7 @@ def alpha_beta_result(game_state: GameState, max_depth, best_black, best_white, 
         return eval_fn(game_state)                             # <2>
 
     best_so_far = MIN_SCORE
-    for candidate_move in game_state.possible_moves():           # <3>
+    for candidate_move in game_state.possible_moves():         # <3>
         next_state = game_state.apply_move(candidate_move)     # <4>
         opponent_best_result = alpha_beta_result(              # <5>
             next_state, max_depth - 1,                         # <5>
@@ -71,7 +72,12 @@ class AlphaBetaAgent(Agent):
         best_black = MIN_SCORE
         best_white = MIN_SCORE
         # Loop over all legal moves.
+
+        start_time = time.time()
         for possible_move in game_state.possible_moves():
+            end_time = time.time()
+            if end_time - start_time > 100:
+                return Move.resign()
             # Calculate the game state if we select this move.
             next_state = game_state.apply_move(possible_move)
             # Since our opponent plays next, figure out their best
