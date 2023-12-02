@@ -2,3 +2,8 @@ __pycache__/
 foobar.py
 **/__pycache__/
 .idea/
+GUI/
+agents/
+evaluation2.py
+evaluation.py
+gbboard.py

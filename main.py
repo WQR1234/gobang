@@ -1,8 +1,8 @@
 import time
 
 from agent import *
-from evaluation2 import evaluation_fn
-from gbboard2 import Board, GameState, Move
+# from evaluation2 import evaluation_fn
+from gbboard2 import Board
 from gbtypes import Player
 
 COL_NAMES = 'ABCDEFGHJKLMNOP'
@@ -13,10 +13,10 @@ def print_board(board: Board):
     for row in range(1, 16):
         pieces = []
         for col in range(1, 16):
-            piece = board.get_player((row-1, col-1))
-            if piece == Player.black:
+            piece = board.get_player((row-1)*15+col-1)
+            if piece == 1:
                 pieces.append('X')
-            elif piece == Player.white:
+            elif piece == 2:
                 pieces.append('O')
             else:
                 pieces.append(' ')
@@ -28,55 +28,49 @@ def print_board(board: Board):
 
 
 def move_from_coords(text):
-    if text == '0':
-        return Move.resign()
     r = int(text[1:])-1
     c = COL_NAMES.index(text[0])
-    return Move.play((r, c))
+    return r*15+c
 
 
 def main():
-    game = GameState.new_game()
+    game = Board()
 
-    choice1 = input("choice black:(1: human, 2:alpha_beta, 3: mcts)")
-    if choice1 == '1':
-        player1 = Human()
-    elif choice1 == '2':
-        player1 = AlphaBetaAgent(3, evaluation_fn)
-    else:
-        player1 = MCTSAgent(15000, 1.3)
+    black_id = int(input("choice black:(1: human, 2:robot)"))
+    white_id = int(input("choice white:(1: human, 2:robot)"))
 
-    choice2 = input("choice white:(1: human, 2:robot, 3: mcts)")
-    if choice2 == '1':
-        player2 = Human()
-    elif choice2 == '2':
-        player2 = RandomBot()
-    else:
-        player2 = MCTSAgent(4000, 1.1)
+    player = Player.Black
+    robot = Agent()
+    robot.game = game
 
-    player = player1
 
-    flag = True
-
-    while not game.is_over():
-        print_board(game.board)
-        print(game.next_player)
+    while game.winner == Player.Empty:
+        print_board(game)
+        print(player)
         # print(evaluation(game))
 
         s = time.time()
-        move = player.select_move(game)
+        if player == Player.Black:
+            if black_id == 1:
+                move = move_from_coords(input('black next move:'))
+            else:
+                if game.step_num == 0:
+                    move = 112
+                else:
+                    move = robot.choice_move()
+        else:
+            if white_id == 1:
+                move = move_from_coords(input('white next move:'))
+            else:
+                move = robot.choice_move()
         e = time.time()
         print(e-s, 's')
 
-        game = game.apply_move(move)
+        game.place_stone(move, player)
 
-        flag = not flag
-        if flag:
-            player = player1
-        else:
-            player = player2
+        player = player.other
 
-    print_board(game.board)
+    print_board(game)
     winner = game.winner
 
     if winner is None:
