@@ -1,0 +1,9 @@
+<RCC>
+  <qresource prefix="/">
+    <file>imgs/grid_board.jpg</file>
+    <file>imgs/translucent_b.png</file>
+    <file>imgs/translucent_w.png</file>
+    <file>imgs/shell_stb1.png</file>
+    <file>imgs/shell_stw1.png</file>
+  </qresource>
+</RCC>
