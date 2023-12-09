@@ -1,5 +1,7 @@
 import random
 
+from PySide6.QtCore import QThread, Signal
+
 from gbboard2 import Board
 from gbtypes import Player
 
@@ -7,14 +9,14 @@ black_scores = {"011110": 9000, "01111": 1000, "11110": 1000, "01110": 900, "011
 white_scores = {"022220": 9000, "02222": 1000, "22220": 1000, "02220": 900, "0220": 90, "020": 9}
 # COL_NAMES = 'ABCDEFGHJKLMNOP'
 
-__all__ = ['Agent']
+__all__ = ['Agent', 'AgentThread']
 
 class Agent:
     directions = [-16, -15, -14, -1, 1, 14, 15, 16]
 
     def __init__(self):
         self.game: Board = None
-        self.max_depth = 4
+        self.max_depth = 5
 
     def move(self, point: int, player: Player):
         self.game.place_stone(point, player)
@@ -195,6 +197,21 @@ class Agent:
         self.game.grid[point] = 0
 
         return score
+
+
+class AgentThread(QThread):
+    move = Signal(int)
+
+    def __init__(self, agent: Agent):
+        super().__init__()
+        self.agent = agent
+
+    def run(self) -> None:
+        if self.agent is not None:
+            next_move = self.agent.choice_move()
+            self.move.emit(next_move)
+        else:
+            print("none!")
 
 
 if __name__ == '__main__':

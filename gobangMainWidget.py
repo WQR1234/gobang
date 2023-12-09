@@ -62,7 +62,6 @@ class GobangMainWidget(QWidget, Ui_GobangMainWidget):
             self.textEdit.clear()
             self.comboBox.setCurrentIndex(0)
             self.comboBox_2.setCurrentIndex(0)
-            self.board_scene.robot = None
             self.board_scene.are_players_robot = [False, False]
 
     @Slot()
@@ -78,14 +77,10 @@ class GobangMainWidget(QWidget, Ui_GobangMainWidget):
     @Slot(int)
     def _on_comboBox_changed(self, i):  # 修改黑方下拉框
         self.board_scene.are_players_robot[0] = bool(i)
-        if i and self.board_scene.robot is None:
-            self.board_scene.robot = Agent()
 
     @Slot(int)
     def _on_comboBox2_changed(self, i):  # 修改白方下拉框
         self.board_scene.are_players_robot[1] = bool(i)
-        if i and self.board_scene.robot is None:
-            self.board_scene.robot = Agent()
 
     @Slot(int)
     def _show_move_info(self, point):

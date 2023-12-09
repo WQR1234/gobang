@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QGraphicsScene, QGraphicsPixmapItem, QGraphicsScen
 
 from typing import List, Optional
 
-from agent import Agent
+from agent import *
 from gbtypes import Player
 from gbboard2 import Board
 
@@ -52,12 +52,15 @@ class BoardScene(QGraphicsScene):
             self._cell_pixmaps.append(cell_pix)
 
         self.gobang_game: Optional[Board] = None
-        self.robot: Optional[Agent] = None
+        self.robot = Agent()
         self.are_players_robot = [False, False]  # 记录黑白是否为人机
 
         self._prev_mouse_pos = 0
 
+        self.agent_thread = AgentThread(self.robot)
+
         self.call_robot_move.connect(self._robot_move)
+        self.agent_thread.move.connect(self._player_move)
 
     def set_cell_pix(self, point, player):
         # 修改指定位置图元的图片
@@ -68,14 +71,14 @@ class BoardScene(QGraphicsScene):
         else:
             self._cell_pixmaps[point].setPixmap(self._empty_pix)
 
-    def _player_move(self, player_idx, point):
+    @Slot(int)
+    def _player_move(self, point):
         """
-        输入落子方与落子点，修改Board对象，修改界面显示。
-        :param player_idx:  落子方，0表示黑，1表示白
+        输入落子点，修改Board对象，修改界面显示。
         :param point:  落子点
         :return:
         """
-        if player_idx == 0:
+        if self.gobang_game.step_num % 2 == 0:
             self.gobang_game.place_stone(point, Player.Black)
             self._cell_pixmaps[point].setPixmap(self._black_pix)
         else:
@@ -91,6 +94,10 @@ class BoardScene(QGraphicsScene):
             self.game_over.emit(res)
 
     def mousePressEvent(self, event: QGraphicsSceneMouseEvent) -> None:
+        if self.agent_thread.isRunning():
+            print("running")
+            return
+
         # 鼠标点击落子
         if (self.gobang_game is not None) and (self.gobang_game.winner==Player.Empty):
             player_idx = self.gobang_game.step_num % 2
@@ -104,9 +111,12 @@ class BoardScene(QGraphicsScene):
             if not self.gobang_game.is_valid_move(point):
                 return
 
-            self._player_move(player_idx, point)
+            self._player_move(point)
 
     def mouseMoveEvent(self, event: QGraphicsSceneMouseEvent) -> None:
+        if self.agent_thread.isRunning():
+            return
+
         # 鼠标移动时，将在其当前位置的图元填充对应的半透明色棋子图片。
         if (self.gobang_game is not None) and (self.gobang_game.winner==Player.Empty):
             if self.gobang_game.is_valid_move(self._prev_mouse_pos):
@@ -133,11 +143,8 @@ class BoardScene(QGraphicsScene):
 
     @Slot()
     def _robot_move(self):  # 人机落子
-        if (self.gobang_game is None) or (self.gobang_game.winner!=Player.Empty):
-            return
+        if (self.gobang_game is not None) and (self.gobang_game.winner==Player.Empty) and (self.are_players_robot[self.gobang_game.step_num % 2]):
+            self.agent_thread.start()  # 启动agent计算的子线程
 
-        robot_idx = self.gobang_game.step_num % 2
-        if self.are_players_robot[robot_idx]:
-            move = self.robot.choice_move()  # 耗时的计算，可考虑放入子线程中
-            self._player_move(robot_idx, move)
+
 
